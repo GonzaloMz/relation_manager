@@ -1,0 +1,45 @@
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+	<title>Terapia de parejas</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+	<style type="text/css" media="screen">
+		.red{
+			color:red;
+			background-color:red;
+		}
+		.green{
+			color:green;
+			background-color:green;
+		}
+	</style>
+	<script type="text/javascript" charset="utf-8">
+		getGame = function(){ 
+			$.ajax({
+				url:"game/"+$('#gameInput').val()
+				,success: function (game) {
+					var data = game.points;
+					console.log(data)
+					for (var i=0;i<data.length;i++){
+						var playerDiv = $('<div/>').addClass('playerBoard');
+						playerDiv.append($('<h3/>').html(data[i].payer))
+						for(var j=data[i].player_points.length-1; j>=0;j--){
+							playerDiv.append($('<div/>')
+								.addClass(data[i].player_points[j].color)
+								.html(data[i].player_points[j].color));
+							playerDiv.append($('<p/>').html(data[i].player_points[j].comment));
+							playerDiv.append($('<p/>').html(data[i].player_points[j].reply));
+							playerDiv.append($('<p/>').html(data[i].player_points[j].date));
+						}
+						$('body').append(playerDiv);
+					}	
+				}
+			})
+		}
+	</script>
+	
+</head>
+<body>
+	<input id="gameInput" type="text" name="game" value="578ad84974b072b20d979bb2">
+	<input type="button" name="getGame" value="Get" onclick="getGame()">
+</body>
