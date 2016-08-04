@@ -13,12 +13,19 @@
 			function architecture(){
 				var w=document.documentElement.clientWidth;
 				var h=document.documentElement.clientHeight;
+				var param;
+				if(w>h)
+					param=h;
+				else
+					param=w;
 				var metrics={
-					w:w,
-					h:h,
+					w:w-3,
+					h:h-3,
 					headerY:h*0.1,
 					centerX:w*0.5,
-					centerY:h*0.5
+					centerY:h*0.5,
+					maxRadius:param*0.20,
+					minRadius:param*0.065
 				}
 				return metrics;
 			}
@@ -30,37 +37,50 @@
 				board.line(flat.centerX,0,flat.centerX,flat.h)
 					.attr({stroke:'#555'});
 				blueCircle=board.circle(flat.centerX, flat.centerY, 0)
-					.attr({fill:'#00f'});
+					.attr({stroke:'#000',"stroke-width":5,"opacity":0.25,fill:'#fff'});
 				redCircle=board.circle(flat.centerX, flat.centerY, 0)
 					.attr({fill:'#f00'});
 				redCircle.expanded=false;
 				greenCircle=board.circle(flat.centerX, flat.centerY, 0)
-					.attr({fill:'#0f0'});
+					.attr({fill:'#0b0'});
 				greenCircle.expanded=false;
-				button=board.circle(flat.centerX, flat.centerY, 30);
+				button=board.circle(flat.centerX, flat.centerY, flat.minRadius)
+					.attr({'fill-opacity':0.25});
 				addingPoint=false;
-				button.mousedown(function(){
-						blueCircle.animate({r: 200}, 400, mina.elastic);
+				var onStart=function(x,y,ev){
+				console.log(x);
+						blueCircle.animate({r: flat.maxRadius}, 400, mina.elastic);
 						addingPoint=true;
-					});
-				blueCircle.mousemove(function(event){
+					};
+				onMove = function(dx,dy){
+					console.log(dx);
 						if(addingPoint){
-							if(!redCircle.expanded && event.clientY>flat.centerY){
-								redCircle.animate({r: 202}, 400, mina.elastic);
+							if(!redCircle.expanded && dy>0){
+								if(greenCircle.expanded){
+										$(greenCircle.node).appendTo($(redCircle.node).parent());
+										$(button.node).appendTo($(redCircle.node).parent());
+										greenCircle.animate({r: 0}, 200);
+										greenCircle.expanded=false;
+									}
+								redCircle.animate({r: flat.maxRadius}, 200);
 								redCircle.expanded=true;
 							}
 							else{
-								if (!greenCircle.expanded && event.clientY<flat.centerY){
+								if (!greenCircle.expanded && dy<0){
 									if(redCircle.expanded){
-										redCircle.animate({r: 0}, 400, mina.elastic);
+										$(redCircle.node).appendTo($(redCircle.node).parent());
+										$(button.node).appendTo($(redCircle.node).parent());
+										redCircle.animate({r: 0}, 200);
 										redCircle.expanded=false;
 									}
-									greenCircle.animate({r: 202}, 400, mina.elastic);
+									greenCircle.animate({r:flat.maxRadius}, 200);
 									greenCircle.expanded=true;
 								}
 							}
 						}
-					});
+					};
+				onFinish = function(){}
+				button.drag(onMove, onStart, onFinish);
 			});
 		</script>
 	</div>

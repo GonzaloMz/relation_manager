@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
-mongoose.connect('mongodb://127.0.0.1:27017/test');
+mongoose.connect('mongodb://192.168.0.9:27017/test');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
