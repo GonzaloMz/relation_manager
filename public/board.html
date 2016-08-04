@@ -6,10 +6,14 @@
 	<script type="text/javascript" charset="utf-8" src="http://snapsvg.io/assets/js/snap.svg-min.js">
 		
 	</script>
+	<script src="board.js"></script>
 </head>
 <body>
 	<div id="board">
 		<script type="text/javascript" charset="utf-8">
+			/**
+			  * Calculo de dimensiones utilizadas para el dibujado del tablero
+			  */
 			function architecture(){
 				var w=document.documentElement.clientWidth;
 				var h=document.documentElement.clientHeight;
@@ -31,56 +35,7 @@
 			}
 			$(document).ready(function(){
 				flat=architecture(board);
-				board = new Snap(board.h,board.w);
-				board.line(0,flat.headerY,flat.w,flat.headerY)
-					.attr({stroke:'#555'});
-				board.line(flat.centerX,0,flat.centerX,flat.h)
-					.attr({stroke:'#555'});
-				blueCircle=board.circle(flat.centerX, flat.centerY, 0)
-					.attr({stroke:'#000',"stroke-width":5,"opacity":0.25,fill:'#fff'});
-				redCircle=board.circle(flat.centerX, flat.centerY, 0)
-					.attr({fill:'#f00'});
-				redCircle.expanded=false;
-				greenCircle=board.circle(flat.centerX, flat.centerY, 0)
-					.attr({fill:'#0b0'});
-				greenCircle.expanded=false;
-				button=board.circle(flat.centerX, flat.centerY, flat.minRadius)
-					.attr({'fill-opacity':0.25});
-				addingPoint=false;
-				var onStart=function(x,y,ev){
-				console.log(x);
-						blueCircle.animate({r: flat.maxRadius}, 400, mina.elastic);
-						addingPoint=true;
-					};
-				onMove = function(dx,dy){
-					console.log(dx);
-						if(addingPoint){
-							if(!redCircle.expanded && dy>0){
-								if(greenCircle.expanded){
-										$(greenCircle.node).appendTo($(redCircle.node).parent());
-										$(button.node).appendTo($(redCircle.node).parent());
-										greenCircle.animate({r: 0}, 200);
-										greenCircle.expanded=false;
-									}
-								redCircle.animate({r: flat.maxRadius}, 200);
-								redCircle.expanded=true;
-							}
-							else{
-								if (!greenCircle.expanded && dy<0){
-									if(redCircle.expanded){
-										$(redCircle.node).appendTo($(redCircle.node).parent());
-										$(button.node).appendTo($(redCircle.node).parent());
-										redCircle.animate({r: 0}, 200);
-										redCircle.expanded=false;
-									}
-									greenCircle.animate({r:flat.maxRadius}, 200);
-									greenCircle.expanded=true;
-								}
-							}
-						}
-					};
-				onFinish = function(){}
-				button.drag(onMove, onStart, onFinish);
+				drawBoard();
 			});
 		</script>
 	</div>
